@@ -53,6 +53,31 @@ group_by(kr, month) %>%
 # is this significant? (nope)
 anova(lm(data = kr, weeks ~ month))
 
+# what about season? (thinking about songs like Cherry Blossom Ending)
+season_determiner <- function(x) {
+  if (x %in% c("December", "January", "Feburary")) {
+    season <- "winter"
+  }
+  else if (x %in% c("March", "April", "May")) {
+    season <- "spring"
+  }
+  else if (x %in% c("June", "July", "August")) {
+    season <- "summer"
+  }
+  else if (x %in% c("September", "October", "November")) {
+    season <- "autumn"
+  }
+  else {
+    season <- NA
+  }
+  return(season)
+}
+
+kr$season <- unlist(lapply(kr$month, season_determiner))
+
+anova(lm(data = kr, weeks ~ season))
+# (nope)
+
 # SM, YG, JYP
 big_3 <- filter(kr, label == "SM" | label == "JYP" | label == "YG")
 head(big_3)
@@ -73,5 +98,8 @@ multiweek_songs <- filter(kr, weeks > 1) %>%
   arrange(desc(weeks))
 multiweek_songs
 
+# more than 2 weeks?
 filter(kr, weeks > 2) %>%
   arrange(desc(weeks))
+
+str(kr)
